@@ -1,0 +1,51 @@
+---
+import { siteData } from '../content/siteData';
+const { about } = siteData;
+---
+
+<section id="about" class="section-spacing border-b border-stone">
+  <div class="container-editorial">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <!-- Section Heading Column -->
+      <div class="lg:col-span-4">
+        <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
+          {about.sectionNumber} / Introduction
+        </span>
+        <h2 class="font-heading font-semibold text-3xl sm:text-4xl text-charcoal">
+          {about.title}
+        </h2>
+      </div>
+
+      <!-- Narrative & 3 Pillars Column -->
+      <div class="lg:col-span-8 space-y-8">
+        <div class="space-y-4 text-base sm:text-lg text-charcoal leading-relaxed">
+          <p class="font-medium text-charcoal">
+            {about.lead}
+          </p>
+          <p class="text-olive">
+            {about.body}
+          </p>
+        </div>
+
+        <!-- Three Compact Focus Areas -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
+          {about.focusAreas.map((area, index) => (
+            <div class="bg-surface border border-stone rounded-xl p-5 sm:p-6 flex flex-col justify-between">
+              <div>
+                <span class="font-mono text-xs text-brass block mb-3">
+                  0{index + 1}
+                </span>
+                <h3 class="font-heading font-semibold text-lg text-charcoal mb-2">
+                  {area.title}
+                </h3>
+                <p class="text-sm text-olive leading-relaxed">
+                  {area.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

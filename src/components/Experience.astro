@@ -1,0 +1,106 @@
+---
+import { siteData } from '../content/siteData';
+const { experienceSection, profile } = siteData;
+---
+
+<section id="experience" class="section-spacing border-b border-stone">
+  <div class="container-editorial">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <!-- Left Column: Sticky Section Intro, Academic Card & CV Button -->
+      <div class="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
+            {experienceSection.sectionNumber} / Background
+          </span>
+          <h2 class="font-heading font-semibold text-3xl sm:text-4xl text-charcoal mb-4">
+            {experienceSection.title}
+          </h2>
+          <p class="text-base text-olive leading-relaxed">
+            {experienceSection.intro}
+          </p>
+        </div>
+
+        <!-- Academic Foundation Card with Forest Accent -->
+        <div class="card-editorial p-5 sm:p-6 border-l-4 border-l-forest space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xs uppercase tracking-wider text-brass font-medium">
+              Academic Foundation
+            </span>
+            <span class="font-mono text-[11px] bg-sage/70 text-forest px-2.5 py-0.5 rounded-full font-medium">
+              First Class
+            </span>
+          </div>
+          <h3 class="font-heading font-semibold text-base text-charcoal leading-snug">
+            {experienceSection.education.degree}
+          </h3>
+          <p class="text-sm text-forest font-medium">
+            {experienceSection.education.institution}
+          </p>
+          <p class="text-xs text-olive pt-2.5 border-t border-stone">
+            {experienceSection.education.additional}
+          </p>
+        </div>
+
+        {profile.showCvDownload && (
+          <div>
+            <a
+              href={profile.cvPath}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto text-sm font-medium text-ivory bg-forest hover:bg-forest-dark px-5 py-3 rounded-xl transition-colors min-h-[46px] shadow-sm"
+            >
+              <svg class="w-4 h-4 text-brass" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Download Full CV (PDF)</span>
+            </a>
+          </div>
+        )}
+      </div>
+
+      <!-- Right Column: Connected Editorial Timeline -->
+      <div class="lg:col-span-8">
+        <div class="relative pl-6 sm:pl-8 border-l-2 border-stone space-y-7">
+          {experienceSection.items.map((item, idx) => (
+            <article class="card-editorial relative p-6 sm:p-7">
+              <!-- Timeline Node Marker -->
+              <span
+                class:list={[
+                  'absolute -left-[31px] sm:-left-[39px] top-7 w-4 h-4 rounded-full border-2 border-surface',
+                  idx === 0 ? 'bg-forest ring-4 ring-sage' : 'bg-brass',
+                ]}
+                aria-hidden="true"
+              ></span>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                <h3 class="font-heading font-bold text-xl text-charcoal">
+                  {item.role}
+                </h3>
+                <span class="font-mono text-xs bg-ivory border border-stone text-olive px-2.5 py-1 rounded-md">
+                  {item.period}
+                </span>
+              </div>
+
+              <p class="text-sm font-semibold text-forest mb-3">
+                {item.organisation}
+              </p>
+
+              <p class="text-sm sm:text-base text-charcoal leading-relaxed mb-4">
+                {item.summary}
+              </p>
+
+              <ul class="space-y-2.5 border-t border-stone pt-4 text-sm text-olive">
+                {item.highlights.map((bullet) => (
+                  <li class="flex items-start gap-2.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brass mt-2 shrink-0" aria-hidden="true"></span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+---
+import { siteData } from '../content/siteData';
+import VentureCard from './VentureCard.astro';
+
+const { venturesSection } = siteData;
+---
+
+<section id="ventures" class="section-spacing border-b border-stone">
+  <div class="container-editorial">
+    <!-- Section Header -->
+    <div class="max-w-2xl mb-10 sm:mb-12">
+      <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
+        {venturesSection.sectionNumber} / Selected Ventures & Concepts
+      </span>
+      <h2 class="font-heading font-semibold text-3xl sm:text-4xl text-charcoal mb-4">
+        {venturesSection.title}
+      </h2>
+      <p class="text-base sm:text-lg text-olive leading-relaxed">
+        {venturesSection.intro}
+      </p>
+    </div>
+
+    <!-- Responsive 2-Column Editorial Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-7">
+      {venturesSection.ventures.map((venture) => (
+        <VentureCard venture={venture} />
+      ))}
+    </div>
+  </div>
+</section>

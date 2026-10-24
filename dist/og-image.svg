@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F7F5EF" />
+  <rect x="48" y="48" width="1104" height="534" rx="24" fill="#163B32" />
+  <circle cx="116" cy="120" r="8" fill="#B18A50" />
+  <text x="140" y="126" fill="#DCE6DD" font-family="monospace" font-size="18" letter-spacing="4">GHANA · BUSINESS · TECHNOLOGY</text>
+  <text x="108" y="255" fill="#F7F5EF" font-family="sans-serif" font-weight="700" font-size="64">Foster Normanyo</text>
+  <text x="108" y="335" fill="#DCE6DD" font-family="sans-serif" font-weight="500" font-size="32">Marketing. Technology. Entrepreneurship.</text>
+  <text x="108" y="385" fill="#B18A50" font-family="sans-serif" font-weight="500" font-size="30">Building towards Africa's next chapter.</text>
+  <line x1="108" y1="455" x2="1092" y2="455" stroke="#B18A50" stroke-width="2" stroke-opacity="0.4" />
+  <text x="108" y="505" fill="#DCE6DD" font-family="monospace" font-size="20">First Class B.Tech Marketing  |  Salesforce Certified  |  Venture Showcase</text>
+</svg>

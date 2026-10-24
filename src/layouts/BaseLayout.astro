@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import { siteData } from '../content/siteData';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = siteData.meta.title,
+  description = siteData.meta.description,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteData.meta.siteUrl);
+const ogImageURL = new URL(siteData.meta.ogImage, Astro.site || siteData.meta.siteUrl);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph / WhatsApp / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:site_name" content={siteData.profile.name} />
+
+    <!-- Twitter / Social Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <!-- Google Fonts: Manrope (500, 600, 700), DM Sans (400, 500, 600), IBM Plex Mono (400, 500) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-ivory text-charcoal selection:bg-forest selection:text-ivory min-h-screen flex flex-col">
+    <!-- Accessible Skip Link -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-forest focus:text-ivory focus:px-4 focus:py-2.5 focus:rounded-lg focus:font-medium focus:shadow-md"
+    >
+      Skip to main content
+    </a>
+
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: #F7F5EF;
+    color: #202722;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Prevent sticky navbar from overlapping section headings when clicking nav links */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid #B18A50;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .container-editorial {
+    @apply mx-auto w-full max-w-editorial px-5 sm:px-8 lg:px-14;
+  }
+
+  .section-spacing {
+    @apply py-14 md:py-20;
+  }
+
+  .card-editorial {
+    @apply bg-surface border border-stone rounded-2xl shadow-[0_2px_10px_-4px_rgba(22,59,50,0.05)] transition-all duration-200 hover:border-brass/60 hover:shadow-[0_8px_24px_-8px_rgba(22,59,50,0.1)];
+  }
+}

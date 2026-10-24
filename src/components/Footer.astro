@@ -1,0 +1,48 @@
+---
+import { siteData } from '../content/siteData';
+const { profile } = siteData;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-forest-dark text-ivory border-t border-forest mt-auto">
+  <div class="container-editorial py-10 sm:py-12">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div>
+        <p class="font-heading font-semibold text-lg text-ivory">
+          {profile.name}
+        </p>
+        <p class="font-mono text-xs text-sage/80 mt-1">
+          Marketing · Technology · Entrepreneurship
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6 text-sm text-sage">
+        <a
+          href={profile.linkedinUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-ivory transition-colors py-1"
+        >
+          LinkedIn
+        </a>
+        <a
+          href={`mailto:${profile.email}`}
+          class="hover:text-ivory transition-colors py-1"
+        >
+          Email
+        </a>
+        <a
+          href="#top"
+          class="font-mono text-xs uppercase tracking-wider text-brass hover:text-ivory transition-colors py-1"
+        >
+          Back to top ↑
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-sage/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-sage/70">
+      <p>© {currentYear} {profile.name}. All rights reserved.</p>
+      <p>Accra, Ghana</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,118 @@
+---
+import { siteData } from '../content/siteData';
+
+const navLinks = [
+  { label: 'About', href: '#about' },
+  { label: 'Ventures', href: '#ventures' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Credentials', href: '#credentials' },
+];
+---
+
+<header class="sticky top-0 z-40 bg-ivory/95 backdrop-blur-md border-b border-stone">
+  <div class="container-editorial flex items-center justify-between h-16 md:h-[74px]">
+    <!-- Left Identity -->
+    <a
+      href="#top"
+      class="group flex flex-col focus:outline-none"
+      aria-label="Foster Normanyo — Back to top"
+    >
+      <span class="font-heading font-bold tracking-tight text-charcoal text-base sm:text-lg group-hover:text-forest transition-colors">
+        {siteData.profile.name.toUpperCase()}
+      </span>
+      <span class="font-mono text-[10px] sm:text-[11px] tracking-widest text-olive hidden sm:block">
+        {siteData.profile.navDescriptor}
+      </span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav aria-label="Primary Navigation" class="hidden md:flex items-center gap-8">
+      <ul class="flex items-center gap-7">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="relative text-sm font-medium text-charcoal hover:text-forest transition-colors py-2 after:content-[''] after:absolute after:left-0 after:bottom-0.5 after:h-[2px] after:w-0 after:bg-brass after:transition-all hover:after:w-full"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href="#connect"
+        class="inline-flex items-center justify-center bg-forest text-ivory hover:bg-forest-dark text-sm font-medium px-5 py-2.5 rounded-xl transition-colors min-h-[42px] shadow-sm"
+      >
+        Let's connect
+      </a>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobile-menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu-panel"
+      aria-label="Toggle navigation menu"
+      class="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-3 rounded-lg border border-stone text-charcoal hover:bg-sage/40 transition-colors"
+    >
+      <span id="menu-label" class="font-mono text-xs uppercase tracking-wider mr-2">Menu</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Compact Mobile Navigation Panel -->
+  <nav
+    id="mobile-menu-panel"
+    aria-label="Mobile Navigation"
+    class="hidden md:hidden border-b border-stone bg-surface px-5 pt-3 pb-5"
+  >
+    <ul class="flex flex-col space-y-1">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="mobile-nav-link block py-3 px-3 rounded-lg text-base font-medium text-charcoal hover:bg-ivory transition-colors"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li class="pt-2">
+        <a
+          href="#connect"
+          class="mobile-nav-link flex items-center justify-center w-full bg-forest text-ivory font-medium py-3 px-4 rounded-xl min-h-[44px]"
+        >
+          Let's connect
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const menuPanel = document.getElementById('mobile-menu-panel');
+  const menuLabel = document.getElementById('menu-label');
+  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+  if (menuBtn && menuPanel && menuLabel) {
+    menuBtn.addEventListener('click', () => {
+      const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', String(!isExpanded));
+      menuPanel.classList.toggle('hidden');
+      menuLabel.textContent = isExpanded ? 'Menu' : 'Close';
+    });
+
+    mobileLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuPanel.classList.add('hidden');
+        menuLabel.textContent = 'Menu';
+      });
+    });
+  }
+</script>

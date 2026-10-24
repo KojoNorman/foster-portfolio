@@ -1,0 +1,113 @@
+---
+import { siteData } from '../content/siteData';
+const { skillsSection, futureSection } = siteData;
+---
+
+<!-- Section 5: Skills and Credentials -->
+<section id="credentials" class="section-spacing border-b border-stone">
+  <div class="container-editorial space-y-12">
+    <div class="max-w-2xl">
+      <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
+        {skillsSection.sectionNumber} / Capabilities & Credentials
+      </span>
+      <h2 class="font-heading font-semibold text-3xl sm:text-4xl text-charcoal">
+        {skillsSection.title}
+      </h2>
+    </div>
+
+    <!-- 4 Skill Categories (No unverified percentage bars) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {skillsSection.groups.map((group) => (
+        <div class="bg-surface border border-stone rounded-xl p-6">
+          <h3 class="font-heading font-semibold text-lg text-charcoal pb-3 mb-4 border-b border-stone">
+            {group.category}
+          </h3>
+          <ul class="space-y-2.5 text-sm text-olive">
+            {group.items.map((skill) => (
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-forest shrink-0" aria-hidden="true"></span>
+                <span>{skill}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Verified Salesforce Credentials Banner -->
+    <div class="bg-sage/45 border border-forest/15 rounded-2xl p-6 sm:p-8">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-wider text-forest block mb-1">
+            Official Certifications
+          </span>
+          <h3 class="font-heading font-semibold text-xl text-charcoal">
+            Salesforce Certified Professional Credentials
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-2/3">
+          {skillsSection.credentials.map((cred) => (
+            <div class="bg-surface border border-stone rounded-xl p-4 flex items-center justify-between gap-4">
+              <div>
+                <p class="font-heading font-semibold text-base text-charcoal">
+                  {cred.title}
+                </p>
+                <p class="font-mono text-xs text-olive mt-0.5">
+                  {cred.issuer} · {cred.statusText}
+                </p>
+              </div>
+              {cred.verificationUrl && (
+                <a
+                  href={cred.verificationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-xs text-forest hover:text-forest-dark underline underline-offset-4 shrink-0 py-2"
+                >
+                  Verify
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 6: Current Interests and Future Direction -->
+<section id="future-direction" class="section-spacing border-b border-stone bg-surface">
+  <div class="container-editorial">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <div class="lg:col-span-5 space-y-4">
+        <span class="font-mono text-xs uppercase tracking-widest text-brass block">
+          {futureSection.sectionNumber} / Future Horizon
+        </span>
+        <h2 class="font-heading font-semibold text-3xl sm:text-4xl text-charcoal">
+          {futureSection.title}
+        </h2>
+        <p class="text-base text-olive leading-relaxed">
+          {futureSection.copy}
+        </p>
+      </div>
+
+      <div class="lg:col-span-7 grid grid-cols-1 gap-4">
+        {futureSection.blocks.map((block) => (
+          <div class="bg-ivory border border-stone rounded-xl p-6 flex items-start gap-4">
+            <span class="font-mono text-sm font-medium text-brass bg-surface border border-stone px-2.5 py-1 rounded-md shrink-0">
+              {block.number}
+            </span>
+            <div>
+              <h3 class="font-heading font-semibold text-lg text-charcoal mb-1">
+                {block.title}
+              </h3>
+              <p class="text-sm text-olive leading-relaxed">
+                {block.detail}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
