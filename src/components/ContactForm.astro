@@ -1,12 +1,12 @@
 ---
 import { siteData } from '../content/siteData';
-const { connectSection, profile } = siteData;
+const { connectSection, profile, formDelivery } = siteData;
 ---
 
 <section id="connect" class="section-spacing">
   <div class="container-editorial">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-      <!-- Left Column: Headline, Compact Numbered Contact Paths & Tactile Outreach Buttons -->
+      <!-- Left Column: Headline, 4 Numbered Contact Paths & Direct Outreach Buttons -->
       <div class="lg:col-span-5 space-y-7">
         <div>
           <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
@@ -73,7 +73,7 @@ const { connectSection, profile } = siteData;
         </div>
       </div>
 
-      <!-- Right Column: Sticky Netlify Contact Form Card -->
+      <!-- Right Column: Sticky Dual-Delivery Contact Form -->
       <div class="lg:col-span-7 lg:sticky lg:top-24">
         <div class="card-editorial border-t-4 border-t-forest p-6 sm:p-9">
           <div class="mb-6 pb-4 border-b border-stone">
@@ -91,12 +91,13 @@ const { connectSection, profile } = siteData;
             method="POST"
             data-netlify="true"
             netlify-honeypot="bot-field"
+            data-web3forms-key={formDelivery?.web3FormsAccessKey || ''}
+            data-emailjs-service={formDelivery?.emailJsServiceId || ''}
+            data-emailjs-template={formDelivery?.emailJsTemplateId || ''}
+            data-emailjs-public={formDelivery?.emailJsPublicKey || ''}
             class="space-y-5"
           >
-            <!-- Required Netlify static form name -->
             <input type="hidden" name="form-name" value="foster-portfolio-contact" />
-
-            <!-- Dynamic Email Subject Line for Netlify Notifications -->
             <input
               type="hidden"
               id="form-subject"
@@ -106,7 +107,7 @@ const { connectSection, profile } = siteData;
 
             <p class="hidden" aria-hidden="true">
               <label>
-                Don’t fill this out if you’re human: <input name="bot-field" />
+                Don’t fill this out if you’re human: <input id="bot-field" name="bot-field" />
               </label>
             </p>
 
@@ -234,7 +235,9 @@ const { connectSection, profile } = siteData;
   const messageInput = document.getElementById('message') as HTMLTextAreaElement | null;
   const subjectInput = document.getElementById('form-subject') as HTMLInputElement | null;
   const nameInput = document.getElementById('name') as HTMLInputElement | null;
+  const emailInput = document.getElementById('email') as HTMLInputElement | null;
   const orgInput = document.getElementById('organisation') as HTMLInputElement | null;
+  const botInput = document.getElementById('bot-field') as HTMLInputElement | null;
 
   ventureLinks.forEach((link) => {
     link.addEventListener('click', () => {
@@ -256,34 +259,102 @@ const { connectSection, profile } = siteData;
   if (form && successBox && errorBox && submitBtn) {
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+
+      // Stop spam bots if honeypot field is filled
+      if (botInput && botInput.value) {
+        return;
+      }
+
       successBox.classList.add('hidden');
       errorBox.classList.add('hidden');
       submitBtn.disabled = true;
       const originalText = submitBtn.textContent;
       submitBtn.textContent = 'Sending...';
 
-      // Build a descriptive email subject line before serializing FormData
       const senderName = nameInput?.value.trim() || 'Website Visitor';
-      const senderOrg = orgInput?.value.trim() ? ` (${orgInput.value.trim()})` : '';
+      const senderEmail = emailInput?.value.trim() || '';
+      const senderOrg = orgInput?.value.trim() || 'Not specified';
       const selectedReason = reasonSelect?.value || 'General Enquiry';
+      const messageText = messageInput?.value.trim() || '';
+      const dynamicSubject = `[Portfolio: ${selectedReason}] from ${senderName}${senderOrg !== 'Not specified' ? ` (${senderOrg})` : ''}`;
+
       if (subjectInput) {
-        subjectInput.value = `[Portfolio: ${selectedReason}] from ${senderName}${senderOrg}`;
+        subjectInput.value = dynamicSubject;
       }
 
+      const web3Key = form.getAttribute('data-web3forms-key') || '';
+      const emailJsService = form.getAttribute('data-emailjs-service') || '';
+      const emailJsTemplate = form.getAttribute('data-emailjs-template') || '';
+      const emailJsPublic = form.getAttribute('data-emailjs-public') || '';
+
       try {
+        const requests: Promise<Response>[] = [];
+
+        // 1. Always save submission to Netlify Forms database
         const formData = new FormData(form);
-        const body = new URLSearchParams(formData as unknown as Record<string, string>).toString();
+        const urlEncodedBody = new URLSearchParams(formData as unknown as Record<string, string>).toString();
+        requests.push(
+          fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: urlEncodedBody,
+          })
+        );
 
-        const response = await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body,
-        });
+        // 2. Option A: Send instant free email via Web3Forms if key is configured
+        if (web3Key) {
+          requests.push(
+            fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify({
+                access_key: web3Key,
+                subject: dynamicSubject,
+                from_name: 'Foster Normanyo Portfolio',
+                name: senderName,
+                email: senderEmail,
+                organisation: senderOrg,
+                reason: selectedReason,
+                message: messageText,
+              }),
+            })
+          );
+        }
 
-        if (response.ok) {
+        // 3. Option B: Send instant free email via EmailJS REST API if credentials are configured
+        if (emailJsService && emailJsTemplate && emailJsPublic) {
+          requests.push(
+            fetch('https://api.emailjs.com/api/v1.0/email/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                service_id: emailJsService,
+                template_id: emailJsTemplate,
+                user_id: emailJsPublic,
+                template_params: {
+                  subject: dynamicSubject,
+                  from_name: senderName,
+                  from_email: senderEmail,
+                  organisation: senderOrg,
+                  reason: selectedReason,
+                  message: messageText,
+                },
+              }),
+            })
+          );
+        }
+
+        const results = await Promise.allSettled(requests);
+        const anySucceeded = results.some(
+          (res) => res.status === 'fulfilled' && res.value.ok
+        );
+
+        if (anySucceeded) {
           form.reset();
           successBox.classList.remove('hidden');
-          // Trigger privacy-conscious analytics event
           const win = window as unknown as { trackPortfolioEvent?: (e: string, d: Record<string, string>) => void };
           if (typeof win.trackPortfolioEvent === 'function') {
             win.trackPortfolioEvent('contact_form_submitted', { reason: selectedReason });

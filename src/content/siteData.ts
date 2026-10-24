@@ -34,6 +34,22 @@ export interface Credential {
   verificationUrl?: string;
 }
 
+export interface AnalyticsConfig {
+  enabled: boolean;
+  provider: 'umami' | 'plausible' | 'goatcounter' | 'custom-only';
+  websiteId: string;
+  scriptUrl: string;
+  domain: string;
+  debugOnLocalhost: boolean;
+}
+
+export interface FormDeliveryConfig {
+  web3FormsAccessKey: string;
+  emailJsServiceId: string;
+  emailJsTemplateId: string;
+  emailJsPublicKey: string;
+}
+
 export const siteData = {
   meta: {
     title: 'Foster Normanyo | Marketing, Technology & Entrepreneurship',
@@ -43,20 +59,21 @@ export const siteData = {
     ogImage: '/og-image.jpg',
   },
 
-  // Add this block right after the `meta` object inside src/content/siteData.ts:
   analytics: {
     enabled: true,
-    // Options: 'umami' | 'plausible' | 'goatcounter' | 'custom-only'
-    provider: 'umami' as 'umami' | 'plausible' | 'goatcounter' | 'custom-only',
-    // Paste your Website ID here once you create your free Umami/GoatCounter account
-    websiteId: '',
-    // Default script URL for Umami Cloud (or replace with your self-hosted/provider URL)
+    provider: 'umami',
+    websiteId: '8d5556fd-e162-4350-bc7c-6d17bdacf9c1',
     scriptUrl: 'https://cloud.umami.is/script.js',
-    // Your live domain for Plausible or GoatCounter
     domain: 'fosternormanyo.netlify.app',
-    // Prints tracked events (CV downloads, Venture clicks, Form submits) in browser console on localhost
     debugOnLocalhost: true,
-  },
+  } as AnalyticsConfig,
+
+  formDelivery: {
+    web3FormsAccessKey: '1b5150fc-3657-4a85-a3f7-20d2da3df2ef',
+    emailJsServiceId: '',
+    emailJsTemplateId: '',
+    emailJsPublicKey: '',
+  } as FormDeliveryConfig,
 
   profile: {
     name: 'Foster Normanyo',
@@ -67,15 +84,12 @@ export const siteData = {
     heroSupporting:
       "I'm Foster Normanyo, a marketing and technology professional exploring how digital systems and entrepreneurship can solve practical problems for African businesses and communities.",
     portraitLabel: 'Marketing | Salesforce | Entrepreneurship',
-    // Enabled for your ready portrait.jpg file
     hasPortraitPhoto: true,
     portraitPath: '/images/portrait.jpg',
     portraitAlt:
       'Portrait of Foster Normanyo, marketing and technology professional in Accra, Ghana',
-    // Enabled for your ready foster-normanyo-cv.pdf file
     showCvDownload: true,
     cvPath: '/documents/foster-normanyo-cv.pdf',
-    // Verified Contact & Profile Links
     email: 'fosternormanyo23@gmail.com',
     linkedinUrl: 'https://www.linkedin.com/in/normanyo-foster',
     trailblazerUrl: 'https://www.salesforce.com/trailblazer/fnorman',
