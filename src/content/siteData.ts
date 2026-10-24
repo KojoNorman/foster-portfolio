@@ -43,6 +43,21 @@ export const siteData = {
     ogImage: '/og-image.jpg',
   },
 
+  // Add this block right after the `meta` object inside src/content/siteData.ts:
+  analytics: {
+    enabled: true,
+    // Options: 'umami' | 'plausible' | 'goatcounter' | 'custom-only'
+    provider: 'umami' as 'umami' | 'plausible' | 'goatcounter' | 'custom-only',
+    // Paste your Website ID here once you create your free Umami/GoatCounter account
+    websiteId: '',
+    // Default script URL for Umami Cloud (or replace with your self-hosted/provider URL)
+    scriptUrl: 'https://cloud.umami.is/script.js',
+    // Your live domain for Plausible or GoatCounter
+    domain: 'fosternormanyo.netlify.app',
+    // Prints tracked events (CV downloads, Venture clicks, Form submits) in browser console on localhost
+    debugOnLocalhost: true,
+  },
+
   profile: {
     name: 'Foster Normanyo',
     navDescriptor: 'MARKETING · TECHNOLOGY · ENTREPRENEURSHIP',

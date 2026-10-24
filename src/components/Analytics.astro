@@ -1,0 +1,112 @@
+---
+import { siteData } from '../content/siteData';
+const { analytics } = siteData;
+---
+
+{analytics.enabled && (
+  <>
+    {/* 1. Umami Analytics Loader (loads only when websiteId is provided) */}
+    {analytics.provider === 'umami' && analytics.websiteId && (
+      <script
+        is:inline
+        defer
+        src={analytics.scriptUrl}
+        data-website-id={analytics.websiteId}
+        data-domains={analytics.domain}
+        data-do-not-track="true"
+      ></script>
+    )}
+
+    {/* 2. Plausible Analytics Loader */}
+    {analytics.provider === 'plausible' && (
+      <script
+        is:inline
+        defer
+        data-domain={analytics.domain}
+        src="https://plausible.io/js/script.js"
+      ></script>
+    )}
+
+    {/* 3. GoatCounter Analytics Loader */}
+    {analytics.provider === 'goatcounter' && analytics.websiteId && (
+      <script
+        is:inline
+         async
+        data-goatcounter={`https://${analytics.websiteId}.goatcounter.com/count`}
+        src="//gc.zgo.at/count.js"
+      ></script>
+    )}
+
+    {/* 4. Privacy-First Custom Interaction Tracker */}
+    <script is:inline define:vars={{ debugOnLocalhost: analytics.debugOnLocalhost }}>
+      (function () {
+        // Respect user Do Not Track browser setting
+        if (navigator.doNotTrack === '1' || window.doNotTrack === '1') {
+          return;
+        }
+
+        const isLocalhost =
+          window.location.hostname === 'localhost' ||
+          window.location.hostname === '127.0.0.1';
+
+        function trackPortfolioEvent(eventName, eventData) {
+          if (isLocalhost && debugOnLocalhost) {
+            console.info('[Portfolio Analytics Event]:', eventName, eventData || {});
+          }
+
+          // Forward to Umami if loaded
+          if (typeof window.umami !== 'undefined' && typeof window.umami.track === 'function') {
+            window.umami.track(eventName, eventData);
+          }
+
+          // Forward to Plausible if loaded
+          if (typeof window.plausible === 'function') {
+            window.plausible(eventName, { props: eventData });
+          }
+
+          // Forward to GoatCounter if loaded
+          if (typeof window.goatcounter !== 'undefined' && typeof window.goatcounter.count === 'function') {
+            window.goatcounter.count({
+              path: 'event-' + eventName + (eventData && eventData.item ? '-' + eventData.item : ''),
+              title: eventName,
+              event: true,
+            });
+          }
+        }
+
+        // Expose globally so ContactForm.astro can trigger it on form submission
+        window.trackPortfolioEvent = trackPortfolioEvent;
+
+        document.addEventListener('DOMContentLoaded', function () {
+          // Track Venture Card CTA clicks
+          document.querySelectorAll('.venture-discuss-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+              const ventureName = link.getAttribute('data-venture-name') || 'Unknown';
+              trackPortfolioEvent('venture_interest_click', { item: ventureName });
+            });
+          });
+
+          // Track CV PDF Downloads
+          document.querySelectorAll('a[href$=".pdf"]').forEach(function (link) {
+            link.addEventListener('click', function () {
+              trackPortfolioEvent('cv_download', { item: 'foster-normanyo-cv.pdf' });
+            });
+          });
+
+          // Track Direct Email and LinkedIn Outreach Clicks
+          document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
+            link.addEventListener('click', function () {
+              trackPortfolioEvent('direct_email_click', { item: 'email' });
+            });
+          });
+
+          document.querySelectorAll('a[href*="linkedin.com"]').forEach(function (link) {
+            link.addEventListener('click', function () {
+              trackPortfolioEvent('linkedin_profile_click', { item: 'linkedin' });
+            });
+          });
+        });
+      })();
+    </script>
+  </>
+)}

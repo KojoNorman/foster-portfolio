@@ -20,7 +20,6 @@ const { connectSection, profile } = siteData;
           </p>
         </div>
 
-        <!-- Four Compact Numbered Contact Paths -->
         <div class="space-y-2.5">
           <p class="font-mono text-xs uppercase tracking-wider text-charcoal font-semibold">
             Ways We Can Engage
@@ -44,7 +43,6 @@ const { connectSection, profile } = siteData;
           </div>
         </div>
 
-        <!-- Tactile Direct Contact Pill Buttons (Replaces plain underlined links) -->
         <div class="pt-4 border-t border-stone space-y-3">
           <p class="font-mono text-xs uppercase tracking-wider text-olive">
             Prefer Direct Outreach?
@@ -95,7 +93,16 @@ const { connectSection, profile } = siteData;
             netlify-honeypot="bot-field"
             class="space-y-5"
           >
+            <!-- Required Netlify static form name -->
             <input type="hidden" name="form-name" value="foster-portfolio-contact" />
+
+            <!-- Dynamic Email Subject Line for Netlify Notifications -->
+            <input
+              type="hidden"
+              id="form-subject"
+              name="subject"
+              value="[Portfolio Enquiry] New message for Foster Normanyo"
+            />
 
             <p class="hidden" aria-hidden="true">
               <label>
@@ -225,6 +232,9 @@ const { connectSection, profile } = siteData;
   const ventureLinks = document.querySelectorAll('.venture-discuss-link');
   const reasonSelect = document.getElementById('reason') as HTMLSelectElement | null;
   const messageInput = document.getElementById('message') as HTMLTextAreaElement | null;
+  const subjectInput = document.getElementById('form-subject') as HTMLInputElement | null;
+  const nameInput = document.getElementById('name') as HTMLInputElement | null;
+  const orgInput = document.getElementById('organisation') as HTMLInputElement | null;
 
   ventureLinks.forEach((link) => {
     link.addEventListener('click', () => {
@@ -252,6 +262,14 @@ const { connectSection, profile } = siteData;
       const originalText = submitBtn.textContent;
       submitBtn.textContent = 'Sending...';
 
+      // Build a descriptive email subject line before serializing FormData
+      const senderName = nameInput?.value.trim() || 'Website Visitor';
+      const senderOrg = orgInput?.value.trim() ? ` (${orgInput.value.trim()})` : '';
+      const selectedReason = reasonSelect?.value || 'General Enquiry';
+      if (subjectInput) {
+        subjectInput.value = `[Portfolio: ${selectedReason}] from ${senderName}${senderOrg}`;
+      }
+
       try {
         const formData = new FormData(form);
         const body = new URLSearchParams(formData as unknown as Record<string, string>).toString();
@@ -265,6 +283,11 @@ const { connectSection, profile } = siteData;
         if (response.ok) {
           form.reset();
           successBox.classList.remove('hidden');
+          // Trigger privacy-conscious analytics event
+          const win = window as unknown as { trackPortfolioEvent?: (e: string, d: Record<string, string>) => void };
+          if (typeof win.trackPortfolioEvent === 'function') {
+            win.trackPortfolioEvent('contact_form_submitted', { reason: selectedReason });
+          }
         } else {
           errorBox.classList.remove('hidden');
         }
