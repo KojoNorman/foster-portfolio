@@ -3,6 +3,12 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[[redirects]]
+  from = "/stats/script.js"
+  to = "https://cloud.umami.is/script.js"
+  status = 200
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

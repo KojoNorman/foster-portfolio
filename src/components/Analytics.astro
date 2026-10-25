@@ -5,19 +5,17 @@ const { analytics } = siteData;
 
 {analytics.enabled && (
   <>
-    {/* 1. Umami Analytics Loader (loads only when websiteId is provided) */}
+    {/* Official Umami Cloud Script Tag */}
     {analytics.provider === 'umami' && analytics.websiteId && (
       <script
         is:inline
         defer
         src={analytics.scriptUrl}
         data-website-id={analytics.websiteId}
-        data-domains={analytics.domain}
-        data-do-not-track="true"
       ></script>
     )}
 
-    {/* 2. Plausible Analytics Loader */}
+    {/* Plausible Analytics Loader (if selected) */}
     {analytics.provider === 'plausible' && (
       <script
         is:inline
@@ -27,44 +25,40 @@ const { analytics } = siteData;
       ></script>
     )}
 
-    {/* 3. GoatCounter Analytics Loader */}
+    {/* GoatCounter Analytics Loader (if selected) */}
     {analytics.provider === 'goatcounter' && analytics.websiteId && (
       <script
         is:inline
-         async
+        async
         data-goatcounter={`https://${analytics.websiteId}.goatcounter.com/count`}
         src="//gc.zgo.at/count.js"
       ></script>
     )}
 
-    {/* 4. Privacy-First Custom Interaction Tracker */}
-    <script is:inline define:vars={{ debugOnLocalhost: analytics.debugOnLocalhost }}>
+    {/* Custom Portfolio Interaction Event Tracker */}
+    <script
+      is:inline
+      define:vars={{
+        debugConsoleLogs: analytics.debugOnLocalhost,
+      }}
+    >
       (function () {
-        // Respect user Do Not Track browser setting
-        if (navigator.doNotTrack === '1' || window.doNotTrack === '1') {
-          return;
-        }
-
-        const isLocalhost =
-          window.location.hostname === 'localhost' ||
-          window.location.hostname === '127.0.0.1';
-
         function trackPortfolioEvent(eventName, eventData) {
-          if (isLocalhost && debugOnLocalhost) {
-            console.info('[Portfolio Analytics Event]:', eventName, eventData || {});
+          if (debugConsoleLogs) {
+            console.info('[Portfolio Analytics -> Umami]:', eventName, eventData || {});
           }
 
-          // Forward to Umami if loaded
+          // Send custom event to Umami Cloud
           if (typeof window.umami !== 'undefined' && typeof window.umami.track === 'function') {
             window.umami.track(eventName, eventData);
           }
 
-          // Forward to Plausible if loaded
+          // Send to Plausible if configured
           if (typeof window.plausible === 'function') {
             window.plausible(eventName, { props: eventData });
           }
 
-          // Forward to GoatCounter if loaded
+          // Send to GoatCounter if configured
           if (typeof window.goatcounter !== 'undefined' && typeof window.goatcounter.count === 'function') {
             window.goatcounter.count({
               path: 'event-' + eventName + (eventData && eventData.item ? '-' + eventData.item : ''),
@@ -74,35 +68,36 @@ const { analytics } = siteData;
           }
         }
 
-        // Expose globally so ContactForm.astro can trigger it on form submission
+        // Expose globally so ContactForm.astro can call it after form submission
         window.trackPortfolioEvent = trackPortfolioEvent;
 
         document.addEventListener('DOMContentLoaded', function () {
-          // Track Venture Card CTA clicks
+          // 1. Track Venture Card clicks
           document.querySelectorAll('.venture-discuss-link').forEach(function (link) {
             link.addEventListener('click', function () {
               const ventureName = link.getAttribute('data-venture-name') || 'Unknown';
-              trackPortfolioEvent('venture_interest_click', { item: ventureName });
+              trackPortfolioEvent('venture_interest_click', { venture: ventureName });
             });
           });
 
-          // Track CV PDF Downloads
+          // 2. Track CV PDF downloads
           document.querySelectorAll('a[href$=".pdf"]').forEach(function (link) {
             link.addEventListener('click', function () {
-              trackPortfolioEvent('cv_download', { item: 'foster-normanyo-cv.pdf' });
+              trackPortfolioEvent('cv_download', { file: 'foster-normanyo-cv.pdf' });
             });
           });
 
-          // Track Direct Email and LinkedIn Outreach Clicks
+          // 3. Track Direct Email clicks
           document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
             link.addEventListener('click', function () {
-              trackPortfolioEvent('direct_email_click', { item: 'email' });
+              trackPortfolioEvent('direct_email_click', { channel: 'email' });
             });
           });
 
+          // 4. Track LinkedIn Profile clicks
           document.querySelectorAll('a[href*="linkedin.com"]').forEach(function (link) {
             link.addEventListener('click', function () {
-              trackPortfolioEvent('linkedin_profile_click', { item: 'linkedin' });
+              trackPortfolioEvent('linkedin_profile_click', { channel: 'linkedin' });
             });
           });
         });
