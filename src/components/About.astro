@@ -1,12 +1,13 @@
 ---
 import { siteData } from '../content/siteData';
 const { about } = siteData;
+const { guidingPrinciples } = about;
 ---
 
 <section id="about" class="section-spacing border-b border-stone">
-  <div class="container-editorial">
+  <div class="container-editorial space-y-12">
+    <!-- Top Row: Narrative & 3 Capability Pillars -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-      <!-- Section Heading Column -->
       <div class="lg:col-span-4">
         <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
           {about.sectionNumber} / Introduction
@@ -16,7 +17,6 @@ const { about } = siteData;
         </h2>
       </div>
 
-      <!-- Narrative & 3 Pillars Column -->
       <div class="lg:col-span-8 space-y-8">
         <div class="space-y-4 text-base sm:text-lg text-charcoal leading-relaxed">
           <p class="font-medium text-charcoal">
@@ -27,10 +27,9 @@ const { about } = siteData;
           </p>
         </div>
 
-        <!-- Three Compact Focus Areas -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
           {about.focusAreas.map((area, index) => (
-            <div class="bg-surface border border-stone rounded-xl p-5 sm:p-6 flex flex-col justify-between">
+            <div class="card-editorial p-5 sm:p-6 flex flex-col justify-between">
               <div>
                 <span class="font-mono text-xs text-brass block mb-3">
                   0{index + 1}
@@ -44,6 +43,83 @@ const { about } = siteData;
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Vision, Mission & E·I·I·S Core Values Compass -->
+    <div class="pt-10 border-t border-stone grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <div class="lg:col-span-4 space-y-3">
+        <span class="font-mono text-xs uppercase tracking-widest text-brass block">
+          Strategic Compass
+        </span>
+        <h3 class="font-heading font-semibold text-2xl sm:text-3xl text-charcoal">
+          Vision, mission & core values
+        </h3>
+        <p class="text-sm sm:text-base text-olive leading-relaxed">
+          The long-term principles guiding how I study, build ventures, and collaborate across Ghana's private and technology sectors.
+        </p>
+      </div>
+
+      <div class="lg:col-span-8 space-y-6">
+        <!-- Vision & Mission Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="bg-forest text-ivory rounded-2xl p-6 sm:p-7 border border-forest-dark shadow-sm flex flex-col justify-between">
+            <div>
+              <span class="font-mono text-xs uppercase tracking-widest text-brass block mb-2">
+                Personal Vision
+              </span>
+              <p class="text-sm sm:text-[15px] text-ivory/95 leading-relaxed">
+                "{guidingPrinciples.vision}"
+              </p>
+            </div>
+          </div>
+
+          <div class="card-editorial p-6 sm:p-7 border-t-4 border-t-brass flex flex-col justify-between">
+            <div>
+              <span class="font-mono text-xs uppercase tracking-widest text-forest font-semibold block mb-2">
+                Personal Mission
+              </span>
+              <p class="text-sm sm:text-[15px] text-charcoal leading-relaxed">
+                "{guidingPrinciples.mission}"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Core Values Grid with E·I·I·S ("EYES") Badge -->
+        <div class="card-editorial p-6 sm:p-7">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-stone">
+            <div>
+              <h4 class="font-heading font-semibold text-lg text-charcoal">
+                Core Values
+              </h4>
+              <p class="text-xs text-olive">
+                Clear sight for execution and long-term stewardship
+              </p>
+            </div>
+            <span class="font-mono text-xs font-semibold bg-sage/75 text-forest border border-forest/20 px-3 py-1 rounded-full">
+              {guidingPrinciples.acronymBadge}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {guidingPrinciples.coreValues.map((val) => (
+              <div class="bg-ivory/75 border border-stone rounded-xl p-4">
+                <div class="flex items-center gap-2.5 mb-2">
+                  <span class="w-7 h-7 rounded-lg bg-forest text-ivory font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                    {val.letter}
+                  </span>
+                  <h5 class="font-heading font-semibold text-base text-charcoal">
+                    {val.title}
+                  </h5>
+                </div>
+                <p class="text-xs text-olive leading-relaxed">
+                  {val.detail}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

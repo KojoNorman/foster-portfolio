@@ -3,14 +3,22 @@ export interface Venture {
   monogram: 'WRC' | 'MEW' | 'NVX' | 'VOT' | 'BME' | 'GRD';
   name: string;
   category: string;
+  tier: 'primary' | 'exploration';
   proposition: string;
   description: string;
+  currentBuildState: string;
   problemAddressed: string;
   beneficiaries: string;
-  status: 'Concept' | 'Prototype' | 'In development' | 'Active';
+  status: 'Active' | 'Prototype in development' | 'Concept in development' | 'Early-stage exploration';
   featured?: boolean;
   tags: string[];
   ctaLabel: string;
+}
+
+export interface CoreValue {
+  letter: string;
+  title: string;
+  detail: string;
 }
 
 export interface ExperienceItem {
@@ -83,6 +91,8 @@ export const siteData = {
       'Building at the intersection of business, technology and African opportunity.',
     heroSupporting:
       "I'm Foster Normanyo, a marketing and technology professional exploring how digital systems and entrepreneurship can solve practical problems for African businesses and communities.",
+    availabilityLine:
+      'Open to mentorship, funded postgraduate study and venture collaboration.',
     portraitLabel: 'Marketing | Salesforce | Entrepreneurship',
     hasPortraitPhoto: true,
     portraitPath: '/images/portrait.jpg',
@@ -99,7 +109,7 @@ export const siteData = {
     sectionNumber: '01',
     title: 'A little about my work',
     lead: 'Grounded in a First Class Bachelor of Technology in Marketing from Accra Technical University and certified training in Salesforce administration, my work sits where commercial strategy meets practical operations.',
-    body: 'Through hands-on experience in internal auditing, monitoring and evaluation, and teaching, I have seen how structured data, clear communication, and reliable digital workflows improve everyday decisions. Today, I channel that operational discipline into developing and testing venture solutions tailored for education, trade, financial inclusion, and institutional trust across Ghana and Africa.',
+    body: 'Through hands-on experience in internal auditing, monitoring and evaluation, and teaching, I have seen how structured data, clear communication, and reliable digital workflows improve everyday decisions. Today, I channel that operational discipline into developing and testing venture concepts tailored for education, trade, and institutional trust across Ghana and Africa.',
     focusAreas: [
       {
         title: 'Business & Marketing',
@@ -117,23 +127,59 @@ export const siteData = {
           'Exploring solutions for education, business growth, trade and institutional challenges.',
       },
     ],
+    guidingPrinciples: {
+      vision:
+        "To establish and lead a diversified conglomerate that sets the standard for operational excellence, financial robustness, and sustainable development in Ghana's private sector.",
+      mission:
+        'To identify high-potential opportunities across industries and build them into self-sustaining, profitable enterprises that generate wealth while solving critical local challenges through technology and disciplined management.',
+      // Adjustable parameter: E·I·I·S ("EYES" — Vision-Led) or W·I·S·E
+      acronymBadge: 'E·I·I·S ("EYES" Framework)',
+      coreValues: [
+        {
+          letter: 'E',
+          title: 'Excellence',
+          detail: 'Setting rigorous standards in research, operational execution, and service delivery.',
+        },
+        {
+          letter: 'I',
+          title: 'Integrity',
+          detail: 'Building institutional trust through transparent auditing, honest claims, and accountability.',
+        },
+        {
+          letter: 'I',
+          title: 'Innovation',
+          detail: 'Applying practical technology and structured workflows to solve everyday local bottlenecks.',
+        },
+        {
+          letter: 'S',
+          title: 'Sustainability',
+          detail: 'Designing resilient business models equipped to generate lasting community and commercial value.',
+        },
+      ] as CoreValue[],
+    },
   },
 
   venturesSection: {
     sectionNumber: '02',
     title: 'Ideas shaped by real-world problems',
     intro:
-      "I'm exploring how thoughtful products and digital systems can address practical challenges in education, business, trade and governance.",
+      "I'm exploring how thoughtful products and digital systems can address practical challenges in education, business, trade and governance. Below are the three primary ventures I am currently focusing on, followed by early-stage concepts under exploration.",
+    otherConceptsTitle: "Other concepts I'm exploring",
+    otherConceptsIntro:
+      'Early-stage architectures and local prototypes exploring institutional governance, community finance, and workflow coordination.',
     ventures: [
       {
         id: 'write-right-consult',
         monogram: 'WRC',
         name: 'Write Right Consult',
         category: 'Academic and professional support',
+        tier: 'primary',
         proposition:
           'Structured academic consulting, research methodology guidance, and professional document preparation.',
         description:
           'Providing structured writing and document-support services for students and professionals, including academic projects, CVs, presentations and integrated marketing communications planning.',
+        currentBuildState:
+          'Currently active: Delivering one-on-one academic consulting, research structuring, and CV/career documentation services.',
         problemAddressed:
           'Students and early-career professionals often struggle to translate strong domain ideas into properly structured academic theses, research frameworks, and career documents.',
         beneficiaries: 'Students, graduates and early-career professionals.',
@@ -147,14 +193,17 @@ export const siteData = {
         monogram: 'MEW',
         name: 'My E-Workbook',
         category: 'Education technology',
+        tier: 'primary',
         proposition:
-          'Accessible web-based learning workbooks, guided videos, and progress tracking for pre-tertiary students.',
+          'Web-based learning workbooks, guided instructional videos, and progress tracking for pre-tertiary students.',
         description:
-          'Exploring digital workbooks, instructional videos, quizzes and progress tracking to make structured learning resources more accessible to pre-tertiary learners in Ghana.',
+          'Developing digital workbooks, instructional videos, quizzes and progress tracking to make structured learning resources more accessible to pre-tertiary learners in Ghana.',
+        currentBuildState:
+          'Prototype in local development: Core web interface and workbook structures are being coded and tested on localhost alongside educational video series.',
         problemAddressed:
           'Many pre-tertiary learners and families lack structured, interactive revision and assessment tools that align with classroom learning outside school hours.',
         beneficiaries: 'Learners, parents, teachers and schools.',
-        status: 'In development',
+        status: 'Prototype in development',
         featured: false,
         tags: ['EdTech', 'Digital learning', 'Assessment', 'Educational access'],
         ctaLabel: 'Discuss this venture',
@@ -164,14 +213,17 @@ export const siteData = {
         monogram: 'NVX',
         name: 'NAVIX',
         category: 'African trade and SME innovation',
+        tier: 'primary',
         proposition:
-          'AI-assisted cross-border trade readiness platform in development for Ghanaian agro-processing SMEs.',
+          'Export-readiness concept exploring how Ghanaian agro-processing SMEs can prepare for regional markets.',
         description:
-          'An AI-assisted export-readiness platform exploring how Ghanaian agro-processing SMEs can better understand and prepare for the requirements of regional and continental markets.',
+          'An AI-assisted export-readiness concept exploring how Ghanaian agro-processing SMEs can better understand compliance and documentation requirements for regional and continental markets.',
+        currentBuildState:
+          'Concept in development: Localhost UI prototype and compliance workflow mapping in progress; AI readiness assessment engine is part of the intended product roadmap.',
         problemAddressed:
           'Small and medium agro-processors face fragmented compliance information and documentation barriers when preparing to trade under regional and AfCFTA frameworks.',
         beneficiaries: 'Ghanaian agro-processing SMEs and export-support organisations.',
-        status: 'In development',
+        status: 'Concept in development',
         featured: false,
         tags: ['SME innovation', 'Trade readiness', 'Digital tools', 'AfCFTA'],
         ctaLabel: 'Explore the idea',
@@ -181,16 +233,19 @@ export const siteData = {
         monogram: 'VOT',
         name: 'VOTENTRA',
         category: 'Digital governance infrastructure',
+        tier: 'exploration',
         proposition:
-          'Multi-tenant institutional e-voting system in development focused on verification and auditability.',
+          'Concept exploring a structured digital voting system for university and association elections.',
         description:
-          'Developing a secure, structured digital voting system for institutional elections, with a longer-term interest in trustworthy digital election infrastructure.',
+          'Exploring how multi-tenant database design and verification mechanics can support transparent institutional elections.',
+        currentBuildState:
+          'Concept in development: Database schema and local prototype architecture under exploration; not yet deployed in live institutional elections.',
         problemAddressed:
-          'Universities, student bodies, and professional associations need transparent, verifiable digital election processes that reduce administrative friction and build voter trust.',
-        beneficiaries: 'Universities, associations and eligible institutions.',
-        status: 'In development',
+          'Universities and associations need verifiable digital election workflows that reduce administrative friction.',
+        beneficiaries: 'Universities, student bodies, and associations.',
+        status: 'Concept in development',
         featured: false,
-        tags: ['Digital governance', 'Institutional systems', 'Election processes', 'Trust'],
+        tags: ['Digital governance', 'Institutional systems', 'Election processes'],
         ctaLabel: 'Explore the idea',
       },
       {
@@ -198,33 +253,39 @@ export const siteData = {
         monogram: 'BME',
         name: 'BoaMe',
         category: 'Community fintech & event workflows',
+        tier: 'exploration',
         proposition:
-          'Digital financial platform in development for Mobile Money contributions and automated Nsawa donation tracking.',
+          'Concept for digital community contributions and automated Nsawa donation record-keeping.',
         description:
-          'Developing a structured digital platform that simplifies community contributions, Mobile Money integration, and transparent record-keeping for local events and social support.',
+          'Exploring how Mobile Money workflows and automated digital receipts can replace error-prone paper ledger books at community events.',
+        currentBuildState:
+          'Early-stage exploration: Workflow architecture and localhost interface concept in progress.',
         problemAddressed:
-          'Traditional paper-based contribution tracking at community gatherings and funerals is prone to manual reconciliation errors and delayed reporting.',
-        beneficiaries: 'Families, event organisers, and community associations in Ghana.',
-        status: 'In development',
+          'Manual paper-based contribution tracking at community gatherings often leads to reconciliation delays.',
+        beneficiaries: 'Families, event organisers, and community associations.',
+        status: 'Early-stage exploration',
         featured: false,
-        tags: ['FinTech', 'Mobile Money', 'Digital records', 'Community systems'],
+        tags: ['FinTech concept', 'Mobile Money', 'Digital records'],
         ctaLabel: 'Explore the idea',
       },
       {
         id: 'the-grid',
         monogram: 'GRD',
         name: 'The Grid',
-        category: 'Digital systems & venture ecosystem',
+        category: 'Digital systems & workflow coordination',
+        tier: 'exploration',
         proposition:
-          'Structured digital platform currently in local development connecting business workflows and user coordination.',
+          'Early-stage web concept exploring modular business workflow and resource coordination.',
         description:
-          'Exploring a modular web platform designed to streamline digital coordination, resource discovery, and structured operational workflows.',
+          'Exploring a unified web workspace concept to help emerging local teams organize digital operations and shared resources.',
+        currentBuildState:
+          'Early-stage exploration: Initial UI layout and concept framing on localhost.',
         problemAddressed:
-          'Growing teams and local businesses often rely on disconnected tools that make coordinating workflows and tracking digital operations difficult.',
-        beneficiaries: 'Emerging businesses, creators, and professional networks.',
-        status: 'In development',
+          'Growing teams often rely on disconnected tools that fragment day-to-day operational tracking.',
+        beneficiaries: 'Emerging businesses, creators, and project teams.',
+        status: 'Early-stage exploration',
         featured: false,
-        tags: ['Digital workflows', 'Web platform', 'Operations', 'Innovation'],
+        tags: ['Digital workflows', 'Web concept', 'Operations'],
         ctaLabel: 'Explore the idea',
       },
     ] as Venture[],
@@ -383,7 +444,7 @@ export const siteData = {
       {
         title: 'Venture collaboration',
         description:
-          'Feedback, pilot partnerships, or research exchange around Write Right Consult, My E-Workbook, NAVIX, VOTENTRA, BoaMe, or The Grid.',
+          'Feedback, pilot partnerships, or research exchange around Write Right Consult, My E-Workbook, NAVIX, or early-stage concepts.',
       },
       {
         title: 'Speaking and other professional enquiries',

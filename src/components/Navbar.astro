@@ -1,5 +1,6 @@
 ---
 import { siteData } from '../content/siteData';
+import QRCode from 'qrcode';
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -7,6 +8,17 @@ const navLinks = [
   { label: 'Experience', href: '#experience' },
   { label: 'Credentials', href: '#credentials' },
 ];
+
+const qrTargetUrl = `${siteData.meta.siteUrl}/?ref=qr`;
+
+const qrSvgString = await QRCode.toString(qrTargetUrl, {
+  type: 'svg',
+  margin: 1,
+  color: {
+    dark: '#163B32',
+    light: '#FFFFFF',
+  },
+});
 ---
 
 <header class="sticky top-0 z-40 bg-ivory/95 backdrop-blur-md border-b border-stone">
@@ -26,8 +38,8 @@ const navLinks = [
     </a>
 
     <!-- Desktop Navigation -->
-    <nav aria-label="Primary Navigation" class="hidden md:flex items-center gap-8">
-      <ul class="flex items-center gap-7">
+    <nav aria-label="Primary Navigation" class="hidden md:flex items-center gap-6 lg:gap-7">
+      <ul class="flex items-center gap-6 lg:gap-7">
         {navLinks.map((link) => (
           <li>
             <a
@@ -40,28 +52,55 @@ const navLinks = [
         ))}
       </ul>
 
-      <a
-        href="#connect"
-        class="inline-flex items-center justify-center bg-forest text-ivory hover:bg-forest-dark text-sm font-medium px-5 py-2.5 rounded-xl transition-colors min-h-[42px] shadow-sm"
-      >
-        Let's connect
-      </a>
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          data-open-qr
+          aria-label="Open portfolio QR code for quick sharing"
+          class="inline-flex items-center gap-2 border border-stone bg-surface hover:bg-sage/40 hover:border-brass text-charcoal text-xs font-mono uppercase tracking-wider px-3.5 py-2.5 rounded-xl transition-colors min-h-[42px]"
+        >
+          <svg class="w-4 h-4 text-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h6v6H3V3zm12 0h6v6h-6V3zM3 15h6v6H3v-6zm12 3h3m3 0h-3m0 0v-3m0 3v3" />
+          </svg>
+          <span>QR Pass</span>
+        </button>
+
+        <a
+          href="#connect"
+          class="inline-flex items-center justify-center bg-forest text-ivory hover:bg-forest-dark text-sm font-medium px-5 py-2.5 rounded-xl transition-colors min-h-[42px] shadow-sm"
+        >
+          Let's connect
+        </a>
+      </div>
     </nav>
 
-    <!-- Mobile Menu Button -->
-    <button
-      id="mobile-menu-btn"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-menu-panel"
-      aria-label="Toggle navigation menu"
-      class="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-3 rounded-lg border border-stone text-charcoal hover:bg-sage/40 transition-colors"
-    >
-      <span id="menu-label" class="font-mono text-xs uppercase tracking-wider mr-2">Menu</span>
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+    <!-- Mobile Action Controls (QR Button + Menu Button) -->
+    <div class="flex md:hidden items-center gap-2">
+      <button
+        type="button"
+        data-open-qr
+        aria-label="Open portfolio QR code"
+        class="inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-3 rounded-lg border border-stone bg-surface text-forest hover:bg-sage/40 transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h6v6H3V3zm12 0h6v6h-6V3zM3 15h6v6H3v-6zm12 3h3m3 0h-3m0 0v-3m0 3v3" />
+        </svg>
+      </button>
+
+      <button
+        id="mobile-menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu-panel"
+        aria-label="Toggle navigation menu"
+        class="inline-flex items-center justify-center min-w-[44px] min-h-[44px] px-3 rounded-lg border border-stone text-charcoal hover:bg-sage/40 transition-colors"
+      >
+        <span id="menu-label" class="font-mono text-xs uppercase tracking-wider mr-2">Menu</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
   </div>
 
   <!-- Compact Mobile Navigation Panel -->
@@ -93,6 +132,64 @@ const navLinks = [
   </nav>
 </header>
 
+<dialog
+  id="qr-modal"
+  aria-labelledby="qr-modal-title"
+  class="backdrop:bg-charcoal/70 backdrop:backdrop-blur-sm bg-transparent p-4 m-auto max-w-sm w-full rounded-2xl focus:outline-none"
+>
+  <div class="bg-ivory border-2 border-brass/50 rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-forest text-ivory px-6 py-4 flex items-center justify-between">
+      <div>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-brass block">
+          Elevate Africa 2026
+        </span>
+        <h2 id="qr-modal-title" class="font-heading font-bold text-lg text-ivory">
+          {siteData.profile.name}
+        </h2>
+      </div>
+      <button
+        id="close-qr-btn"
+        type="button"
+        aria-label="Close QR code modal"
+        class="w-9 h-9 rounded-lg bg-forest-dark text-sage hover:text-ivory flex items-center justify-center border border-sage/20 transition-colors"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="p-6 text-center space-y-4">
+      <p class="text-xs sm:text-sm text-olive">
+        Scan with your phone camera to open my portfolio, ventures, and contact links.
+      </p>
+
+      <div
+        class="mx-auto w-52 h-52 bg-surface p-3.5 rounded-2xl border border-stone shadow-sm flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
+        set:html={qrSvgString}
+      />
+
+      <div class="pt-1">
+        <p class="font-mono text-xs text-forest font-medium">
+          fosternormanyo.netlify.app
+        </p>
+        <p class="font-mono text-[11px] text-olive mt-0.5">
+          B.Tech Marketing (First Class) · 2x Salesforce Certified
+        </p>
+      </div>
+
+      <div class="pt-2 flex items-center gap-2">
+        <button
+          id="copy-portfolio-url"
+          type="button"
+          data-url={siteData.meta.siteUrl}
+          class="w-full inline-flex items-center justify-center gap-2 bg-forest text-ivory hover:bg-forest-dark text-xs font-mono uppercase tracking-wider py-3 px-4 rounded-xl transition-colors min-h-[44px]"
+        >
+          <span id="copy-url-text">Copy Portfolio Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
 <script>
   const menuBtn = document.getElementById('mobile-menu-btn');
   const menuPanel = document.getElementById('mobile-menu-panel');
@@ -113,6 +210,55 @@ const navLinks = [
         menuPanel.classList.add('hidden');
         menuLabel.textContent = 'Menu';
       });
+    });
+  }
+
+  const qrModal = document.getElementById('qr-modal') as HTMLDialogElement | null;
+  const openQrButtons = document.querySelectorAll('[data-open-qr]');
+  const closeQrBtn = document.getElementById('close-qr-btn');
+  const copyUrlBtn = document.getElementById('copy-portfolio-url');
+  const copyUrlText = document.getElementById('copy-url-text');
+
+  if (qrModal) {
+    openQrButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        qrModal.showModal();
+        const win = window as unknown as { trackPortfolioEvent?: (e: string, d: Record<string, string>) => void };
+        if (typeof win.trackPortfolioEvent === 'function') {
+          win.trackPortfolioEvent('qr_modal_open', { source: 'navbar' });
+        }
+      });
+    });
+
+    closeQrBtn?.addEventListener('click', () => {
+      qrModal.close();
+    });
+
+    qrModal.addEventListener('click', (event) => {
+      const rect = qrModal.getBoundingClientRect();
+      const clickedInDialog =
+        rect.top <= event.clientY &&
+        event.clientY <= rect.top + rect.height &&
+        rect.left <= event.clientX &&
+        event.clientX <= rect.left + rect.width;
+      if (!clickedInDialog) {
+        qrModal.close();
+      }
+    });
+  }
+
+  if (copyUrlBtn && copyUrlText) {
+    copyUrlBtn.addEventListener('click', async () => {
+      const url = copyUrlBtn.getAttribute('data-url') || window.location.origin;
+      try {
+        await navigator.clipboard.writeText(url);
+        copyUrlText.textContent = 'Link Copied!';
+        setTimeout(() => {
+          copyUrlText.textContent = 'Copy Portfolio Link';
+        }, 2000);
+      } catch {
+        copyUrlText.textContent = url;
+      }
     });
   }
 </script>

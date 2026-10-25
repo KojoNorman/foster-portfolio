@@ -3,46 +3,48 @@ import type { Venture } from '../content/siteData';
 
 interface Props {
   venture: Venture;
+  compact?: boolean;
 }
 
-const { venture } = Astro.props;
+const { venture, compact = false } = Astro.props;
 
 const statusStyles: Record<Venture['status'], string> = {
   Active: 'bg-forest text-ivory border-forest',
-  'In development': 'bg-sage/75 text-forest border-forest/20',
-  Prototype: 'bg-ivory text-charcoal border-stone',
-  Concept: 'bg-ivory text-olive border-stone',
+  'Prototype in development': 'bg-sage/85 text-forest border-forest/25',
+  'Concept in development': 'bg-ivory text-charcoal border-brass/50',
+  'Early-stage exploration': 'bg-ivory text-olive border-stone',
 };
 
 const dotStyles: Record<Venture['status'], string> = {
   Active: 'bg-brass',
-  'In development': 'bg-forest',
-  Prototype: 'bg-brass',
-  Concept: 'bg-olive',
+  'Prototype in development': 'bg-forest',
+  'Concept in development': 'bg-brass',
+  'Early-stage exploration': 'bg-olive',
 };
 ---
 
 <article
   class:list={[
     'card-editorial relative overflow-hidden flex flex-col justify-between',
-    venture.featured
+    venture.featured && !compact
       ? 'lg:col-span-2 border-forest/40 p-6 sm:p-8 lg:p-9'
-      : 'p-6 sm:p-7',
+      : compact
+        ? 'p-5 sm:p-6 bg-surface/90'
+        : 'p-6 sm:p-7',
   ]}
 >
-  <!-- Top Accent Bar for Featured Venture -->
-  {venture.featured && (
+  {venture.featured && !compact && (
     <div class="absolute top-0 left-0 right-0 h-1.5 bg-forest" aria-hidden="true"></div>
   )}
 
   <div>
-    <!-- Row 1: Monogram Badge on Left + Locked Status Badge on Right (Prevents uneven line wrapping) -->
-    <div class="flex items-center justify-between gap-3 mb-4">
-      <div class="flex items-center gap-3">
+    <!-- Row 1: Monogram + Transparent Status Badge -->
+    <div class="flex items-center justify-between gap-2 mb-3.5">
+      <div class="flex items-center gap-2.5">
         <div
           class:list={[
-            'w-10 h-10 rounded-xl border flex items-center justify-center font-mono text-xs font-semibold shrink-0',
-            venture.featured
+            'w-9 h-9 rounded-xl border flex items-center justify-center font-mono text-xs font-semibold shrink-0',
+            venture.featured && !compact
               ? 'bg-forest text-ivory border-forest'
               : 'bg-ivory text-forest border-stone',
           ]}
@@ -51,71 +53,80 @@ const dotStyles: Record<Venture['status'], string> = {
           {venture.monogram}
         </div>
 
-        {venture.featured && (
+        {venture.featured && !compact && (
           <span class="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider bg-ivory border border-brass/40 text-charcoal px-2.5 py-1 rounded-md font-medium">
             <span class="w-1.5 h-1.5 rounded-full bg-brass"></span>
-            Featured Venture
+            Primary Focus
           </span>
         )}
       </div>
 
-      <!-- Status Pill (Never wraps awkwardly below category) -->
       <span
         class:list={[
-          'inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1 rounded-full border font-medium shrink-0',
+          'inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-full border font-medium shrink-0',
           statusStyles[venture.status],
         ]}
       >
         <span class:list={['w-1.5 h-1.5 rounded-full', dotStyles[venture.status]]} aria-hidden="true"></span>
-        <span>Status: {venture.status}</span>
+        <span>{venture.status}</span>
       </span>
     </div>
 
-    <!-- Row 2: Consistent Category Eyebrow -->
-    <div class="flex items-center gap-2 mb-2">
+    <!-- Row 2: Category Eyebrow -->
+    <div class="flex items-center gap-2 mb-1.5">
       <span class="w-3 h-[2px] bg-brass shrink-0" aria-hidden="true"></span>
-      <span class="font-mono text-xs uppercase tracking-wider text-olive">
+      <span class="font-mono text-[11px] uppercase tracking-wider text-olive">
         {venture.category}
       </span>
     </div>
 
-    <!-- Row 3: Venture Title & Proposition -->
-    <h3 class="font-heading font-bold text-xl sm:text-2xl text-charcoal mb-2">
+    <!-- Row 3: Venture Name & Proposition -->
+    <h3 class:list={['font-heading font-bold text-charcoal mb-1.5', compact ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl']}>
       {venture.name}
     </h3>
-    <p class="text-[15px] sm:text-base font-medium text-forest mb-3 leading-snug">
+    <p class="text-sm sm:text-[15px] font-medium text-forest mb-2.5 leading-snug">
       {venture.proposition}
     </p>
-    <p class="text-sm sm:text-[15px] text-olive leading-relaxed mb-6">
+    <p class="text-xs sm:text-sm text-olive leading-relaxed mb-4">
       {venture.description}
     </p>
 
-    <!-- Row 4: Structured Problem & Beneficiaries Box -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-ivory/70 border border-stone/80 text-sm mb-6">
-      <div>
-        <span class="font-mono text-[11px] uppercase tracking-wider text-charcoal font-semibold block mb-1">
-          Problem Addressed
-        </span>
-        <p class="text-olive text-xs sm:text-sm leading-relaxed">
-          {venture.problemAddressed}
-        </p>
-      </div>
-      <div class="sm:border-l sm:border-stone sm:pl-4">
-        <span class="font-mono text-[11px] uppercase tracking-wider text-charcoal font-semibold block mb-1">
-          Intended Beneficiaries
-        </span>
-        <p class="text-olive text-xs sm:text-sm leading-relaxed">
-          {venture.beneficiaries}
-        </p>
-      </div>
+    <!-- Row 4: Honest Build & Verification State Banner -->
+    <div class="mb-4 px-3.5 py-2.5 rounded-lg bg-sage/35 border border-forest/15 text-xs text-charcoal leading-relaxed">
+      <span class="font-mono uppercase tracking-wider text-[10px] text-forest font-semibold block mb-0.5">
+        Current Stage & Scope
+      </span>
+      {venture.currentBuildState}
     </div>
+
+    <!-- Row 5: Problem & Beneficiaries (Shown on Primary Ventures) -->
+    {!compact && (
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-ivory/70 border border-stone/80 text-sm mb-5">
+        <div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-charcoal font-semibold block mb-1">
+            Problem Addressed
+          </span>
+          <p class="text-olive text-xs sm:text-sm leading-relaxed">
+            {venture.problemAddressed}
+          </p>
+        </div>
+        <div class="sm:border-l sm:border-stone sm:pl-4">
+          <span class="font-mono text-[11px] uppercase tracking-wider text-charcoal font-semibold block mb-1">
+            Intended Beneficiaries
+          </span>
+          <p class="text-olive text-xs sm:text-sm leading-relaxed">
+            {venture.beneficiaries}
+          </p>
+        </div>
+      </div>
+    )}
   </div>
 
-  <!-- Row 5: Footer Tags & Action Link -->
-  <div class="pt-4 border-t border-stone flex flex-wrap items-center justify-between gap-4">
+  <!-- Row 6: Tags & Action Link -->
+  <div class="pt-3.5 border-t border-stone flex flex-wrap items-center justify-between gap-3">
     <ul class="flex flex-wrap gap-1.5" aria-label={`Topics for ${venture.name}`}>
       {venture.tags.map((tag) => (
-        <li class="font-mono text-[11px] bg-ivory text-olive px-2.5 py-1 rounded-md border border-stone">
+        <li class="font-mono text-[10px] sm:text-[11px] bg-ivory text-olive px-2 py-0.5 rounded-md border border-stone">
           {tag}
         </li>
       ))}
@@ -124,11 +135,11 @@ const dotStyles: Record<Venture['status'], string> = {
     <a
       href="#connect"
       data-venture-name={venture.name}
-      class="venture-discuss-link group inline-flex items-center text-sm font-semibold text-forest hover:text-forest-dark py-1 shrink-0"
+      class="venture-discuss-link group inline-flex items-center text-xs sm:text-sm font-semibold text-forest hover:text-forest-dark py-1 shrink-0"
     >
       <span>{venture.ctaLabel}</span>
       <svg
-        class="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-1 text-brass"
+        class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 text-brass"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
