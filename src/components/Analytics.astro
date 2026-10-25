@@ -5,17 +5,19 @@ const { analytics } = siteData;
 
 {analytics.enabled && (
   <>
-    {/* Official Umami Cloud Script Tag */}
+    {/* Official Umami Cloud Script Tag with First-Party Proxy Fallback */}
     {analytics.provider === 'umami' && analytics.websiteId && (
       <script
         is:inline
         defer
         src={analytics.scriptUrl}
         data-website-id={analytics.websiteId}
+        onload="console.info('[Portfolio Analytics]: Umami script loaded and active.');"
+        onerror="console.warn('[Portfolio Analytics]: Direct Umami script blocked by browser shield; switching to first-party proxy...'); var s = document.createElement('script'); s.defer = true; s.src = '/stats/script.js'; s.setAttribute('data-website-id', this.getAttribute('data-website-id')); s.setAttribute('data-host-url', '/stats'); document.head.appendChild(s);"
       ></script>
     )}
 
-    {/* Plausible Analytics Loader (if selected) */}
+    {/* Plausible Analytics Loader */}
     {analytics.provider === 'plausible' && (
       <script
         is:inline
@@ -25,7 +27,7 @@ const { analytics } = siteData;
       ></script>
     )}
 
-    {/* GoatCounter Analytics Loader (if selected) */}
+    {/* GoatCounter Analytics Loader */}
     {analytics.provider === 'goatcounter' && analytics.websiteId && (
       <script
         is:inline
@@ -45,20 +47,17 @@ const { analytics } = siteData;
       (function () {
         function trackPortfolioEvent(eventName, eventData) {
           if (debugConsoleLogs) {
-            console.info('[Portfolio Analytics -> Umami]:', eventName, eventData || {});
+            console.info('[Portfolio Analytics -> Umami Event]:', eventName, eventData || {});
           }
 
-          // Send custom event to Umami Cloud
           if (typeof window.umami !== 'undefined' && typeof window.umami.track === 'function') {
             window.umami.track(eventName, eventData);
           }
 
-          // Send to Plausible if configured
           if (typeof window.plausible === 'function') {
             window.plausible(eventName, { props: eventData });
           }
 
-          // Send to GoatCounter if configured
           if (typeof window.goatcounter !== 'undefined' && typeof window.goatcounter.count === 'function') {
             window.goatcounter.count({
               path: 'event-' + eventName + (eventData && eventData.item ? '-' + eventData.item : ''),
@@ -68,11 +67,9 @@ const { analytics } = siteData;
           }
         }
 
-        // Expose globally so ContactForm.astro can call it after form submission
         window.trackPortfolioEvent = trackPortfolioEvent;
 
         document.addEventListener('DOMContentLoaded', function () {
-          // 1. Track Venture Card clicks
           document.querySelectorAll('.venture-discuss-link').forEach(function (link) {
             link.addEventListener('click', function () {
               const ventureName = link.getAttribute('data-venture-name') || 'Unknown';
@@ -80,21 +77,18 @@ const { analytics } = siteData;
             });
           });
 
-          // 2. Track CV PDF downloads
           document.querySelectorAll('a[href$=".pdf"]').forEach(function (link) {
             link.addEventListener('click', function () {
               trackPortfolioEvent('cv_download', { file: 'foster-normanyo-cv.pdf' });
             });
           });
 
-          // 3. Track Direct Email clicks
           document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
             link.addEventListener('click', function () {
               trackPortfolioEvent('direct_email_click', { channel: 'email' });
             });
           });
 
-          // 4. Track LinkedIn Profile clicks
           document.querySelectorAll('a[href*="linkedin.com"]').forEach(function (link) {
             link.addEventListener('click', function () {
               trackPortfolioEvent('linkedin_profile_click', { channel: 'linkedin' });

@@ -9,6 +9,12 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/stats/api/send"
+  to = "https://api-gateway.umami.dev/api/send"
+  status = 200
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
